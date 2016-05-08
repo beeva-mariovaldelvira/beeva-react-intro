@@ -1,23 +1,98 @@
 <html>
 <head>
+	<meta charset="utf-8" />
+	<title>BEEVA Curso React JS - ClickCounter</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+	<style media="screen">
+		#countNumber.go{
+			color: blue;
+		}
+		#countNumber.stop {
+			color:red;
+		}
+	</style>
 </head>
 
 <body>
 
 	<div id="saludo"></div>
 	<div id="container"></div>
-	
+
 	<script type="text/babel">
 
 		ReactDOM.render(
-			<h1>Hola mundo</h1>,
+			<h1>Click Counter</h1>,
 			document.getElementById('saludo')
 		);
+	</script>
 
-		
-	</script/>
+
+
+	<script type="text/babel">
+		class ClickCounter extends React.Component {
+
+		  constructor ( props ) {
+		    super( props )
+
+		    this.state = {
+		      count: 0,
+					keep: true,
+					clase: 'go'
+		    }
+		  }
+
+			shouldComponentUpdate (nextProps, nextState) {
+				//console.log('shouldComponentUpdate', nextState.count, this.state.count, nextState.keep, this.state.keep);
+				return nextState.keep || this.state.keep || nextState.count !== this.state.count;
+			}
+
+			componentWillUpdate (nextProps, nextState) {
+				//console.log('componentWillUpdate', nextState.count, this.state.count, nextState.keep, this.state.keep, nextState.clase);
+			}
+
+			incrementClick () {
+				var numero = (this.state.keep) ? this.state.count + 1 : this.state.count;
+				if (this.state.keep) {
+					this.setState({
+						count: this.state.count + 1
+					});
+				}
+			}
+
+			stopClick () {
+				this.setState({
+					keep: false,
+					clase: 'stop'
+				});
+			}
+
+			resumeClick () {
+				this.setState({
+					keep: true,
+					clase: 'go'
+				});
+			}
+
+		  render () {
+		    return(
+					<div>
+						<button onClick={this.incrementClick.bind(this)}>Haz click!</button>
+						<button onClick={this.stopClick.bind(this)}>Parar</button>
+						<button onClick={this.resumeClick.bind(this)}>Continuar</button>
+						<p id="countNumber" className={this.state.clase}>Número de clicks: {this.state.count}</p>
+					</div>
+				);
+		  }
+		}
+
+		ClickCounter.defaultProps = { initialCount: 0 };
+
+		ReactDOM.render(
+			<ClickCounter/>,
+			document.getElementById('container')
+		);
+	</script>
 </body>
 </html>
